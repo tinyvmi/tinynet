@@ -1,8 +1,19 @@
-#include <stdio.h>
-#include <unistd.h>
 
-int main(void) {
-        sleep(2);
-        printf("Hello, world!\n");
-        return 0;
+#include "connection.h"
+
+
+
+int main(void){
+
+    int i;
+
+    // start_daytime();
+    start_chargen();
+
+    
+    for (i = 0; i < 10000; i++){
+        sleep(200000);
+    }
+
+    return 0;
 }

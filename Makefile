@@ -6,7 +6,7 @@ endif
 
 all: main.a
 
-main.a: main.o 
+main.a: main.o daytime.o chargen.o
 	$(AR) cr $@ $^
 
 clean:

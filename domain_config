@@ -1,0 +1,24 @@
+#  -*- mode: python; -*-
+#============================================================================
+# Python configuration setup for 'xm create'.
+# This script sets the parameters used when a domain is created using 'xm create'.
+# You use a separate script for each domain you want to create, or 
+# you can set the parameters for the domain on the xm command line.
+#============================================================================
+
+#----------------------------------------------------------------------------
+# Kernel image file.
+kernel = "mini-os.gz"
+
+# Initial memory allocation (in megabytes) for the new domain.
+memory = 64
+
+# A name for your domain. All domains must have different names.
+name = "TinyNet"
+
+vif = ['mac=00:16:3e:5b:db:5d,ip=10.0.0.101,bridge=netbr0' ]
+
+on_crash = 'destroy'
+
+seclabel='system_u:system_r:domU_t'
+
