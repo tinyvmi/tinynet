@@ -21,7 +21,7 @@
 
 #include "connection.h"
 
-#define LISTEN_PORT 49152
+// #define LISTEN_PORT 49152
 
 static char message[29];
 
@@ -44,18 +44,18 @@ void run_daytime(void *p)
         networking_set_addr(&ipaddr, &netmask, &gw);
     }
 
-    printf("Opening connection\n");
+    printf("server: %s: Opening connection\n", __FUNCTION__);
 
     listener = netconn_new(NETCONN_TCP);
-    printf("Connection at %p, port: %d\n", listener, listen_port);
+    printf("%s: Connection at %p, port: %d\n", __FUNCTION__, listener, listen_port);
 
     //rc = netconn_bind(listener, &listenaddr, listen_port);
     rc = netconn_bind(listener, IP_ADDR_ANY, listen_port);
     if (rc != ERR_OK) {
-        printf("Failed to bind connection: %i\n", rc);
+        printf("%s: Failed to bind connection: %i\n", __FUNCTION__, rc);
         return;
     }
-    printf("success bind port: %u\n", listen_port);
+    printf("%s: success bind port: %u\n", __FUNCTION__, listen_port);
 
     rc = netconn_listen(listener);
     if (rc != ERR_OK) {
@@ -63,11 +63,14 @@ void run_daytime(void *p)
         return;
     }
 
-    printf("now listening on connection\n");
+    printf("%s: now listening on connection\n", __FUNCTION__);
 
     while (1) {
 
         session = netconn_accept(listener);
+
+        printf("%s: got a connection from client\n", __FUNCTION__);
+
         if (session == NULL) 
             continue;
         //rc = netconn_accept(listener, &session);
@@ -93,4 +96,91 @@ int start_daytime(void)
     //     sleep(200000);
     // }
     return 0;
+}
+
+
+void run_client(void)
+{
+
+
+    // struct netconn *xNetConn = NULL;
+
+    // struct ip_addr local_ip; 
+    // struct ip_addr remote_ip; 
+    // int rc1, rc2; 
+    
+    // xNetConn = netconn_new ( NETCONN_TCP ); 
+    
+    // if ( xNetConn == NULL ) { 
+    
+    // /* No memory for new connection? */
+    // continue;
+    // }
+
+    // local_ip.addr = <get IP of this device>
+
+    // rc1 = netconn_bind ( xNetConn, &local_ip, 0 ); 
+    
+    // remote_ip.addr = xRemoteIp; // static or by netconn_gethostbyname ()
+    // rc2 = netconn_connect ( xNetConn, &remote_ip, cClientPort ); 
+    
+    // if ( rc1 != ERR_OK || rc2 != ERR_OK )
+    // {
+
+    //   netconn_delete ( xNetConn );
+    //  continue;
+    // }
+    
+    struct ip_addr remote_ip = { htonl(0x0a000065) };
+    
+    struct ip_addr localip = { htonl(0x0a000065) };
+    
+    struct netconn *targetconn;
+    struct netconn *session;
+    struct timeval tv;
+    u16_t listen_port=LISTEN_PORT; //13;
+
+    err_t rc;
+
+    while (1){
+        printf("Client:\n %s: Opening connection\n", __FUNCTION__);
+
+        targetconn = netconn_new(NETCONN_TCP);
+            if ( targetconn == NULL ) { 
+        
+            /* No memory for new connection? */
+            continue;
+        }
+        printf("%s: Connection at %p, port: %d\n",
+            __FUNCTION__, targetconn, listen_port);
+    
+        rc = netconn_bind(targetconn, &localip, 0);
+        // rc = netconn_bind(targetconn, IP_ADDR_ANY, listen_port);
+        if (rc != ERR_OK) {
+            printf("%s: Failed to bind connection: %i\n",
+                 __FUNCTION__, rc);
+            // return;
+            continue;
+        }
+
+        printf("%s: Connecting remote ip %x, port: %d\n", __FUNCTION__,
+            ntohl(remote_ip.addr), LISTEN_PORT);
+    
+        rc = netconn_connect ( targetconn, &remote_ip, LISTEN_PORT ); 
+        
+        if ( rc != ERR_OK )
+        {
+
+            netconn_delete ( targetconn );
+            continue;
+        }
+
+        // while (1) {
+            gettimeofday(&tv, NULL);
+            sprintf(message, "%20lu.%6.6lu\n", tv.tv_sec, tv.tv_usec);
+            (void) netconn_write(targetconn, message, strlen(message), NETCONN_COPY);
+            (void) netconn_disconnect(targetconn);
+            (void) netconn_delete(targetconn);
+        // }
+    }
 }

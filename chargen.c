@@ -62,7 +62,7 @@
 #include <lwip/api.h>
 
 
-#define LISTEN_PORT 49152
+// #define LISTEN_PORT 49152
 
 
 #if LWIP_SOCKET
@@ -118,11 +118,15 @@ static void chargen_thread(void *arg)
     if (bind(listenfd, (struct sockaddr *) &chargen_saddr, sizeof(chargen_saddr)) == -1)
         LWIP_ASSERT("chargen_thread(): Socket bind failed.", 0);
 
+    printf("%s: call listen.\n", __FUNCTION__);
+
     /* Put socket into listening mode */
     if (listen(listenfd, MAX_SERV) == -1)
         LWIP_ASSERT("chargen_thread(): Listen failed.", 0);
 
     
+    printf("%s: listening...\n", __FUNCTION__);
+
     /* Wait forever for network input: This could be connections or data */
     for (;;)
     {
@@ -156,6 +160,9 @@ static void chargen_thread(void *arg)
                 p_charcb->socket = accept(listenfd,
                                         (struct sockaddr *) &p_charcb->cliaddr,
                                         &p_charcb->clilen);
+            
+                printf("%s: got a connection from client\n", __FUNCTION__);
+
                 if (p_charcb->socket < 0)
                     free(p_charcb);
                 else
@@ -172,6 +179,9 @@ static void chargen_thread(void *arg)
                 socklen_t clilen;
 
                 sock = accept(listenfd, &cliaddr, &clilen);
+        
+                printf("%s: got a connection from client\n", __FUNCTION__);
+
                 if (sock >= 0)
                     close(sock);
             }
