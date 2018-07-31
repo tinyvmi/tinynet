@@ -2,7 +2,7 @@
 #ifndef TINY_NET_CONNECTION_H
 #define TINY_NET_CONNECTION_H
 
-#define LISTEN_PORT 49152
+// #define LISTEN_PORT 49152
 
 /**
  * daytime server example in daytime.c in minios.

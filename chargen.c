@@ -62,7 +62,7 @@
 #include <lwip/api.h>
 
 
-// #define LISTEN_PORT 49152
+#define LISTEN_PORT 49152
 
 
 #if LWIP_SOCKET
