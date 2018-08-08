@@ -38,8 +38,13 @@ void run_daytime(void *p)
     //     networking_set_addr(&ipaddr, &netmask, &gw);
     // }
 
-    printf("server: %s: Opening connection\n", __FUNCTION__);
+    // while(1){
+    //     sleep(1);
+    //     printf("server thread function loop: %s\n", __FUNCTION__);
+    // }
 
+    printf("server: %s: Opening connection\n", __FUNCTION__);
+    
     listener = netconn_new(NETCONN_TCP);
     printf("%s: Connection at %p, port: %d\n", __FUNCTION__, listener, listen_port);
 
